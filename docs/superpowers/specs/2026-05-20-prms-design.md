@@ -52,7 +52,7 @@ A passenger may use a resource when `passenger.tier >= resource.minimum_tier` (o
 - `App\Enums\Tier` — rank + `canAccess(Tier $required): bool`
 - `App\Enums\Role`
 - `App\Services\Access\ResourceAccessService` — `ensureCanUse(User $passenger, Resource $resource)`
-- `App\Services\CrewLeadService` — enforce max 3 crew leads
+- `App\Services\CrewLeadService` — enforce **exactly** 3 crew leads (no 4th account, no crew delete, `assertMissionReady()` before PRMS operations when roster ≠ 3)
 - `App\Services\ResourceUsageService` — record use after access check
 - `App\Policies\ResourcePolicy` — `use`, `manage` (crew only)
 
@@ -60,7 +60,7 @@ A passenger may use a resource when `passenger.tier >= resource.minimum_tier` (o
 
 ### Level 1
 
-- Block 4th crew lead
+- Exactly 3 crew leads: block 4th account, block crew delete, lock PRMS until roster count is 3
 - Crew CRUD resources (create/deactivate)
 - Crew CRUD passengers (create with tier)
 - Passenger lists only accessible active resources

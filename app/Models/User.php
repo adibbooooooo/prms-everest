@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\Role;
 use App\Enums\Tier;
+use App\Services\CrewLeadService;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -17,6 +18,23 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    protected static function booted(): void
+    {
+        static::creating(function (User $user) {
+            app(CrewLeadService::class)->validateCrewLeadRole($user);
+        });
+
+        static::updating(function (User $user) {
+            if ($user->isDirty('role')) {
+                app(CrewLeadService::class)->validateCrewLeadRole($user);
+            }
+        });
+
+        static::deleting(function (User $user) {
+            app(CrewLeadService::class)->validateDeletion($user);
+        });
+    }
 
     protected function casts(): array
     {
