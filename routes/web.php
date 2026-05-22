@@ -24,4 +24,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::middleware(['auth', 'mission.ready', 'crew'])->prefix('crew')->group(function () {
+    Route::get('/ping', fn () => response()->json(['area' => 'crew']))->name('crew.ping');
+});
+
+Route::middleware(['auth', 'mission.ready', 'passenger'])->prefix('passenger')->group(function () {
+    Route::get('/ping', fn () => response()->json(['area' => 'passenger']))->name('passenger.ping');
+});
+
 require __DIR__.'/auth.php';
